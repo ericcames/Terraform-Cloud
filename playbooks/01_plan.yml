@@ -1,0 +1,32 @@
+---
+# Extra vars
+# ansible_python_interpreter: /usr/bin/python3
+#
+- name: Terraform plan
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+    - name: Create a plan-only run with polling and capture the run id
+      register: plan_output
+      hashicorp.terraform.run:
+        workspace: "POC"
+        organization: "Default"
+        save_plan: true
+        run_message: "Quick plan check"
+        poll: true
+        state: "present"
+        tf_timeout: 600
+        poll_timeout: 600
+        poll_interval: 10
+
+    - name: Print output
+      ansible.builtin.debug:
+        var: plan_output.id
+
+    - name: Set stat
+      ansible.builtin.set_stats:
+        data:
+          my_run_id: "{{ plan_output.id }}"

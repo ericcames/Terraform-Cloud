@@ -1,0 +1,21 @@
+---
+# Extra vars
+# ansible_python_interpreter: /usr/bin/python3
+- name: Terraform apply
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+    - name: Apply existing run
+      hashicorp.terraform.run:
+        workspace: "POC"
+        organization: "Default"
+        run_message: "Deploy new application version"
+        auto_apply: true
+        state: "applied"
+        tf_timeout: 600
+        poll_timeout: 600
+        poll_interval: 10
+        run_id: "{{ my_run_id }}"
